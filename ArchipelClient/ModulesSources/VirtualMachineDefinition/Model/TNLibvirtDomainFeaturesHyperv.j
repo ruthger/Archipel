@@ -20,38 +20,37 @@
 @import <StropheCappuccino/TNXMLNode.j>
 
 @import "TNLibvirtBase.j"
-@import "TNLibvirDomainFeaturesAPIC.j"
-@import "TNLibvirDomainFeaturesHyperv.j"
+@import "TNLibvirtDomainFeaturesHypervRelaxed.j"
+@import "TNLibvirtDomainFeaturesHypervVapic.j"
+@import "TNLibvirtDomainFeaturesHypervSpinlocks.j"
 
-TNLibvirtDomainFeaturesPAE      = @"pae";
-TNLibvirtDomainFeaturesACPI     = @"acpi";
-TNLibvirtDomainFeaturesHAP      = @"hap";
-TNLibvirtDomainFeaturesAPIC     = @"apic";
-TNLibvirtDomainFeaturesHyperv   = @"apic";
+TNLibvirtDomainFeaturesHypervRelaxed   = @"relaxed";
+TNLibvirtDomainFeaturesHypervVAPIC     = @"vapic";
+TNLibvirtDomainFeaturesHypervspinlocks = @"spinlocks";
 
 /*! @ingroup virtualmachinedefinition
     Model for features
 */
 @implementation TNLibvirtDomainFeatures : TNLibvirtBase
 {
-    BOOL                          _ACPI   @accessors(getter=isACPI, setter=setACPI:);
-    BOOL                          _HAP    @accessors(getter=isHAP, setter=setHAP:);
-    BOOL                          _PAE    @accessors(getter=isPAE, setter=setPAE:);
-    TNLibvirtDomainFeaturesAPIC   _APIC   @accessors(property=APIC);
-    TNLibvirtDomainFeaturesHyperv _hyperv @accessors(property=hyperv);
+    TNLibvirtDomainFeaturesHypervRelaxed   _relaxed    @accessors(property=relaxed);
+    TNLibvirtDomainFeaturesHypervVApic     _vapic      @accessors(property=vapic);
+    TNLibvirtDomainFeaturesHypervSpinlocks _spinlocks  @accessors(property=spinlocks);
 }
 
 
 #pragma mark -
 #pragma mark Initialization
 
-/*! initialize the Disk
+/*! initialize the HyperV features
 */
 - (id)init
 {
     if (self = [super init])
     {
-        _APIC       = [[TNLibvirtDomainFeaturesAPIC alloc] init];
+        _relaxed    = [[TNLibvirtDomainFeaturesHypervRelaxed alloc] init];
+        _vapic      = [[TNLibvirtDomainFeaturesHypervVApic alloc] init];
+        _spinlocks  = [[TNLibvirtDomainFeaturesHypervSpinlocks alloc] init];
     }
 
     return self;
@@ -66,13 +65,10 @@ TNLibvirtDomainFeaturesHyperv   = @"apic";
     {
         if ([aNode name] != @"features")
             [CPException raise:@"XML not valid" reason:@"The TNXMLNode provided is not a valid features"];
-	
-        _ACPI   = [aNode firstChildWithName:@"acpi"] ? YES : NO;
-        _HAP    = [aNode firstChildWithName:@"hap"] ? YES : NO;
-        _PAE    = [aNode firstChildWithName:@"pae"] ? YES : NO;
 
-        _APIC   = [[TNLibvirtDomainFeaturesAPIC alloc] initWithXMLNode:[aNode firstChildWithName:@"apic"]];
-        _hyperv = [[TNLibvirtDomainFeaturesHyperv alloc] initWithXMLNode:[aNode firstChildWithName:@"hyperv"]];
+        _relaxed   = [[TNLibvirtDomainFeaturesHypervRelaxed alloc]   initWithXMLNode:[aNode firstChildWithName:@"relaxed"]];
+        _vapic     = [[TNLibvirtDomainFeaturesHypervVapic alloc]     initWithXMLNode:[aNode firstChildWithName:@"vapic"]];
+        _spinlocks = [[TNLibvirtDomainFeaturesHypervSpinlocks alloc] initWithXMLNode:[aNode firstChildWithName:@"spinlocks"]];
     }
 
     return self;
@@ -87,29 +83,21 @@ TNLibvirtDomainFeaturesHyperv   = @"apic";
 */
 - (TNXMLNode)XMLNode
 {
-    if (_PAE)
+    var node = [TNXMLNode nodeWithName:@"hyperv"];
+
+    if (_relaxed)
     {
-        [node addChildWithName:@"pae"];
+        [node addChildWithName:@"relaxed"];
         [node up];
     }
-    if (_ACPI)
+    if (_vapic)
     {
-        [node addChildWithName:@"acpi"];
+        [node addChildWithName:@"vapic"];
         [node up];
     }
-    if (_HAP)
+    if (_spinlocks)
     {
-        [node addChildWithName:@"hap"];
-        [node up];
-    }
-    if (_APIC)
-    {
-        [node addChildWithName:@"apic"];
-        [node up];
-    }
-    if (_hyperv)
-    {
-        [node addChildWithName:@"hyperv"];
+        [node addChildWithName:@"spinlocks"];
         [node up];
     }
 

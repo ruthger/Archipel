@@ -59,13 +59,24 @@ TNLibvirtDeviceDiskDriverCaches                     = [ TNLibvirtDeviceDiskDrive
                                                         TNLibvirtDeviceDiskDriverCacheWritethrough,
                                                         TNLibvirtDeviceDiskDriverCacheWriteback];
 
+TNLibvirtDeviceDiskDriverIoNative                   = @"native";
+TNLibvirtDeviceDiskDriverIoThreads                  = @"threads";
+TNLibvirtDeviceDiskDriverIo                         = [ TNLibvirtDeviceDiskDriverIoNative,
+                                                        TNLibvirtDeviceDiskDriverIoThreads];
+
+TNLibvirtDeviceDiskDriverDiscardUnmap               = @"unmap";
+TNLibvirtDeviceDiskDriverDiscardIgnore              = @"ignore";
+TNLibvirtDeviceDiskDriverDiscard                    = [ TNLibvirtDeviceDiskDriverDiscardUnmap,
+                                                        TNLibvirtDeviceDiskDriverDiscardIgnore];
+
+
 /*! @ingroup virtualmachinedefinition
     Model for disk driver
 */
 @implementation TNLibvirtDeviceDiskDriver : TNLibvirtBase
 {
     CPString    _cache          @accessors(property=cache);
-    CPString    _IO             @accessors(property=IO);
+    CPString    _io             @accessors(property=io);
     CPString    _name           @accessors(property=name);
     CPString    _type           @accessors(property=type);
 }
@@ -84,10 +95,11 @@ TNLibvirtDeviceDiskDriverCaches                     = [ TNLibvirtDeviceDiskDrive
         if ([aNode name] != @"driver")
             [CPException raise:@"XML not valid" reason:@"The TNXMLNode provided is not a valid disk driver"];
 
-        _cache  = [aNode valueForAttribute:@"cache"] || TNLibvirtDeviceDiskDriverCacheDefault;
-        _IO     = [aNode valueForAttribute:@"IO"];
-        _name   = [aNode valueForAttribute:@"name"];
-        _type   = [aNode valueForAttribute:@"type"];
+        _cache   = [aNode valueForAttribute:@"cache"] || TNLibvirtDeviceDiskDriverCacheDefault;
+        _name    = [aNode valueForAttribute:@"name"];
+        _type    = [aNode valueForAttribute:@"type"];
+        _io      = [aNode valueForAttribute:@"io"];
+        _discard = [aNode valueForAttribute:@"discard"];
     }
 
     return self;
@@ -106,12 +118,14 @@ TNLibvirtDeviceDiskDriverCaches                     = [ TNLibvirtDeviceDiskDrive
 
     if (_cache)
         [node setValue:_cache forAttribute:@"cache"];
-    if (_IO)
-        [node setValue:_IO forAttribute:@"io"];
     if (_name)
         [node setValue:_name forAttribute:@"name"];
     if (_type)
         [node setValue:_type forAttribute:@"type"];
+    if (_io)
+        [node setValue:_IO forAttribute:@"io"];
+    if (_discard)
+        [node setValue:_discard forAttribute:@"discard"];
 
     return node;
 }
