@@ -28,12 +28,14 @@ TNLibvirtDomainClockTimerNamePIT            = @"pit";
 TNLibvirtDomainClockTimerNamePlatform       = @"platform";
 TNLibvirtDomainClockTimerNameRTC            = @"rtc";
 TNLibvirtDomainClockTimerNameTSC            = @"tsc";
+TNLibvirtDomainClockTimerNameHyperV         = @"hypervclock";
 
 TNLibvirtDomainClockTimerNames              = [ TNLibvirtDomainClockTimerNameHPET,
                                                 TNLibvirtDomainClockTimerNamePIT,
                                                 TNLibvirtDomainClockTimerNamePlatform,
                                                 TNLibvirtDomainClockTimerNameRTC,
-                                                TNLibvirtDomainClockTimerNameTSC];
+                                                TNLibvirtDomainClockTimerNameTSC,
+                                                TNLibvirtDomainClockTimerNameHyperV];
 
 
 TNLibvirtDomainClockTimerTrackBoot          = @"boot";

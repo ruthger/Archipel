@@ -21,6 +21,8 @@
 
 @import "TNLibvirtBase.j";
 @import "TNLibvirtDomainOSType.j"
+@import "TNLibvirtDomainOSLoader.j"
+@import "TNLibvirtDomainOSNvram.j"
 
 TNLibvirtDomainOSBootHardDrive          = @"hd";
 TNLibvirtDomainOSBootCDROM              = @"cdrom";
@@ -42,8 +44,9 @@ TNLibvirtDomainOSBoots                  = [ TNLibvirtDomainOSBootHardDrive,
     CPString                _commandLine        @accessors(property=commandLine);
     CPString                _initrd             @accessors(property=initrd);
     CPString                _kernel             @accessors(property=kernel);
-    CPString                _loader             @accessors(property=loader);
     TNLibvirtDomainOSType   _type               @accessors(property=type);
+    TNLibvirtDomainOSLoader _loader             @accessors(property=loader);
+    TNLibvirtDomainOSNvram  _nvram              @accessors(property=nvram);
 }
 
 
@@ -75,9 +78,10 @@ TNLibvirtDomainOSBoots                  = [ TNLibvirtDomainOSBootHardDrive,
         _commandLine        = [[aNode firstChildWithName:@"cmdline"] text];
         _initrd             = [[aNode firstChildWithName:@"initrd"] text];
         _kernel             = [[aNode firstChildWithName:@"kernel"] text];
-        _loader             = [[aNode firstChildWithName:@"loader"] text];
 
-        _type               = [[TNLibvirtDomainOSType alloc] initWithXMLNode:[aNode firstChildWithName:@"type"] domainType:aDomainType];
+        _type               = [[TNLibvirtDomainOSType   alloc] initWithXMLNode:[aNode firstChildWithName:@"type"]   domainType:aDomainType];
+        _loader             = [[TNLibvirtDomainOSLoader alloc] initWithXMLNode:[aNode firstChildWithName:@"loader"] domainLoader:aDomainLoader];
+        _nvram              = [[TNLibvirtDomainOSNvram  alloc] initWithXMLNode:[aNode firstChildWithName:@"nvram"]  domainNvram:aDomainNvram];
     }
 
     return self;
@@ -99,10 +103,14 @@ TNLibvirtDomainOSBoots                  = [ TNLibvirtDomainOSBootHardDrive,
         [node addNode:[_type XMLNode]];
         [node up];
     }
-    if (_loader && _loader != @"")
+    if (_loader)
     {
-        [node addChildWithName:@"loader"];
-        [node addTextNode:_loader];
+        [node addNode:[_loader XMLNode]];
+        [node up];
+    }
+    if (_nvram)
+    {
+        [node addNode:[_nvram XMLNode]];
         [node up];
     }
     if (_boot)
