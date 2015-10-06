@@ -1,5 +1,5 @@
 /*
- * TNLibvirtDomainCpu.j
+ * TNLibvirtDomainCpuModel.j
  *
  * Copyright (C) 2010 Antoine Mercadal <antoine.mercadal@inframonde.eu>
  * This program is free software: you can redistribute it and/or modify
@@ -43,9 +43,10 @@ TNLibvirtDomainCpuMatchFallbackForbid   = @"forbid";
     if (self = [super initWithXMLNode:aNode])
     {
         if ([aNode name] != @"model")
-            [CPException raise:@"XML not valid" reason:@"The TNXMLNode provided is not a valid cpu"];
+            [CPException raise:@"XML not valid" reason:@"The TNXMLNode provided is not a valid cpu model"];
 
-        _fallback           = [[aNode firstChildWithName:@"fallback"] valueForAttribute:@"dev"];
+        if ([aNode containsChildrenWithName:@"fallback"])
+            _fallback           = [aNode firstChildWithName:@"fallback"];
         _model              = [aNode text];
     }
 
@@ -61,7 +62,7 @@ TNLibvirtDomainCpuMatchFallbackForbid   = @"forbid";
 */
 - (TNXMLNode)XMLNode
 {
-    var node = [TNXMLNode nodeWithName:@"cpu"];
+    var node = [TNXMLNode nodeWithName:@"model"];
 
     if (_fallback)
     {

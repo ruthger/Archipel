@@ -1,5 +1,5 @@
 /*
- * TNLibvirtDomainCpu.j
+ * TNLibvirtDomainCpuVendor.j
  *
  * Copyright (C) 2010 Antoine Mercadal <antoine.mercadal@inframonde.eu>
  * This program is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@
 /*! @ingroup virtualmachinedefinition
     Model for domain CPU Vendor
 */
-@implementation TNLibvirtDomainCpu : TNLibvirtBase
+@implementation TNLibvirtDomainCpuVendor : TNLibvirtBase
 {
     CPString                    _vendor             @accessors(property=match);
 }
@@ -59,7 +59,7 @@
 */
 - (TNXMLNode)XMLNode
 {
-    var node = [TNXMLNode nodeWithName:@"cpu"];
+    var node = [TNXMLNode nodeWithName:@"vendor"];
 
     [node addTextNode:_vendor];
 

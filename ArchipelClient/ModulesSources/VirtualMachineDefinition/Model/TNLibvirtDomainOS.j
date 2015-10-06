@@ -80,8 +80,10 @@ TNLibvirtDomainOSBoots                  = [ TNLibvirtDomainOSBootHardDrive,
         _kernel             = [[aNode firstChildWithName:@"kernel"] text];
 
         _type               = [[TNLibvirtDomainOSType   alloc] initWithXMLNode:[aNode firstChildWithName:@"type"]   domainType:aDomainType];
-        _loader             = [[TNLibvirtDomainOSLoader alloc] initWithXMLNode:[aNode firstChildWithName:@"loader"] domainLoader:aDomainLoader];
-        _nvram              = [[TNLibvirtDomainOSNvram  alloc] initWithXMLNode:[aNode firstChildWithName:@"nvram"]  domainNvram:aDomainNvram];
+        if ([aNode containsChildrenWithName:@"loader"])
+            _loader             = [[TNLibvirtDomainOSLoader alloc] initWithXMLNode:[aNode firstChildWithName:@"loader"] domainLoader:aDomainLoader];
+        if ([aNode containsChildrenWithName:@"nvram"])
+            _nvram              = [[TNLibvirtDomainOSNvram  alloc] initWithXMLNode:[aNode firstChildWithName:@"nvram"]  domainNvram:aDomainNvram];
     }
 
     return self;

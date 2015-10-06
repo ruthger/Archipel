@@ -46,10 +46,14 @@
         if ([aNode name] != @"driver")
             [CPException raise:@"XML not valid" reason:@"The TNXMLNode provided is not a valid controller driver"];
 
-        _queues         = [aNode valueForAttribute:@"queues"];
-        _cmdPerLun      = [aNode valueForAttribute:@"cmd_per_lun"];
-        _maxSectors     = [aNode valueForAttribute:@"max_sectors"];
-        _ioeventfd      = [aNode valueForAttribute:@"ioeventfd"];
+        if ([aNode containsChildrenWithName:@"queues"])
+            _queues         = [aNode valueForAttribute:@"queues"];
+        if ([aNode containsChildrenWithName:@"cmd_per_lun"])
+            _cmdPerLun      = [aNode valueForAttribute:@"cmd_per_lun"];
+        if ([aNode containsChildrenWithName:@"max_sectors"])
+            _maxSectors     = [aNode valueForAttribute:@"max_sectors"];
+        if ([aNode containsChildrenWithName:@"ioeventfd"])
+            _ioeventfd      = [aNode valueForAttribute:@"ioeventfd"];
     }
 
     return self;

@@ -1,5 +1,5 @@
 /*
- * TNLibvirtDomainCpu.j
+ * TNLibvirtDomainCpuTopology.j
  *
  * Copyright (C) 2010 Antoine Mercadal <antoine.mercadal@inframonde.eu>
  * This program is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@
 @import "TNLibvirtBase.j";
 
 /*! @ingroup virtualmachinedefinition
-    Model for domain CPU
+    Model for domain CPU topology
 */
 @implementation TNLibvirtDomainCpuTopology : TNLibvirtBase
 {
@@ -41,12 +41,12 @@
 {
     if (self = [super initWithXMLNode:aNode])
     {
-        if ([aNode name] != @"cpu")
-            [CPException raise:@"XML not valid" reason:@"The TNXMLNode provided is not a valid cpu"];
+        if ([aNode name] != @"topology")
+            [CPException raise:@"XML not valid" reason:@"The TNXMLNode provided is not a valid cpu topology"];
 
-        _sockets            = [[aNode firstChildWithName:@"sockets"] valueForAttribute:@"dev"];
-        _cores              = [[aNode firstChildWithName:@"cores"] valueForAttribute:@"dev"];
-        _threads            = [[aNode firstChildWithName:@"threads"] valueForAttribute:@"dev"];
+        _sockets            = [aNode firstChildWithName:@"sockets"];
+        _cores              = [aNode firstChildWithName:@"cores"];
+        _threads            = [aNode firstChildWithName:@"threads"];
     }
 
     return self;
@@ -61,7 +61,7 @@
 */
 - (TNXMLNode)XMLNode
 {
-    var node = [TNXMLNode nodeWithName:@"cpu"];
+    var node = [TNXMLNode nodeWithName:@"topology"];
 
     if (_sockets)
     {
