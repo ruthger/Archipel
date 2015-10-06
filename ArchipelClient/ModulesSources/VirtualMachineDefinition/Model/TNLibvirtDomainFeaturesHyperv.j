@@ -24,9 +24,6 @@
 @import "TNLibvirtDomainFeaturesHypervVapic.j"
 @import "TNLibvirtDomainFeaturesHypervSpinlocks.j"
 
-TNLibvirtDomainFeaturesHypervRelaxed   = @"relaxed";
-TNLibvirtDomainFeaturesHypervVAPIC     = @"vapic";
-TNLibvirtDomainFeaturesHypervspinlocks = @"spinlocks";
 
 /*! @ingroup virtualmachinedefinition
     Model for features
