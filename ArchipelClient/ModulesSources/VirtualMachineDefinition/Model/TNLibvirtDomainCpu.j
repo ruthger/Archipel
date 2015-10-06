@@ -23,6 +23,7 @@
 @import "TNLibvirtDomainCpuType.j"
 @import "TNLibvirtDomainCpuLoader.j"
 @import "TNLibvirtDomainCpuNvram.j"
+@import "TNLibvirtDomainCpuFeature.j"
 
 TNLibvirtDomainCpuMacthMinimum          = @"minimum";
 TNLibvirtDomainCpuMatchExact            = @"exact";
@@ -49,6 +50,7 @@ DomainCpuModes                          = [ TNLibvirtDomainCpuModeCustom,
     TNLibvirtDomainCpuVendor    _vendor             @accessors(property=vendor);
     TNLibvirtDomainCpuModel     _model              @accessors(property=model);
     TNLibvirtDomainCpuTopology  _topology           @accessors(property=topology);
+    CPArray                     _features           @accessors(property=features);
 }
 
 
@@ -65,11 +67,24 @@ DomainCpuModes                          = [ TNLibvirtDomainCpuModeCustom,
         if ([aNode name] != @"cpu")
             [CPException raise:@"XML not valid" reason:@"The TNXMLNode provided is not a valid cpu"];
 
-        _match              = [[aNode firstChildWithName:@"match"] valueForAttribute:@"dev"];
-        _mode               = [[aNode firstChildWithName:@"mode"] valueForAttribute:@"dev"];
-        _vendor             = [[TNLibvirtDomainCpuVendor   alloc] initWithXMLNode:[aNode firstChildWithName:@"vendor"];   domainCpuVendor:aDomainCpuVendor];
-        _model              = [[TNLibvirtDomainCpuModel    alloc] initWithXMLNode:[aNode firstChildWithName:@"model"]     domainCpuModel:aDomainCpuModel];
-        _topology           = [[TNLibvirtDomainCpuTopology alloc] initWithXMLNode:[aNode firstChildWithName:@"topology"];
+        if ([aNode containsChildrenWithName:@"match"])
+            _match              = [aNode firstChildWithName:@"match"];
+        if ([aNode containsChildrenWithName:@"mode"])
+            _mode               = [aNode firstChildWithName:@"mode"];
+
+        if ([aNode containsChildrenWithName:@"vendor"])
+            _vendor             = [[TNLibvirtDomainCpuVendor   alloc] initWithXMLNode:[aNode firstChildWithName:@"vendor"];   domainCpuVendor:aDomainCpuVendor];
+        if ([aNode containsChildrenWithName:@"model"])
+            _model              = [[TNLibvirtDomainCpuModel    alloc] initWithXMLNode:[aNode firstChildWithName:@"model"]     domainCpuModel:aDomainCpuModel];
+        if ([aNode containsChildrenWithName:@"topology"])
+            _topology           = [[TNLibvirtDomainCpuTopology alloc] initWithXMLNode:[aNode firstChildWithName:@"topology"];
+
+        _features = [CPArray array];
+        var featureNodes = [aNode ownChildrenWithName:@"feature"];
+        for (var i = 0; i < [featureNodes count]; i++)
+            [_feature addObject:[[TNLibvirtDomainCpuFeature  alloc] initWithXMLNode:[featureNodes objectAtIndex:i]]];
+
+
     }
 
     return self;
@@ -111,7 +126,11 @@ DomainCpuModes                          = [ TNLibvirtDomainCpuModeCustom,
         [node addNode:[_topology XMLNode]];
         [node up];
     }
-
+    for (var i = 0; i < [_features count]; i++)
+    {
+        [node addNode:[[_features objectAtIndex:i] XMLNode]];
+        [node up];
+    }
     return node;
 }
 
