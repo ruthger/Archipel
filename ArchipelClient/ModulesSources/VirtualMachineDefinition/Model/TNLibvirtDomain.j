@@ -147,7 +147,8 @@ TNLibvirtDomainLifeCycles                   = [ TNLibvirtDomainLifeCycleDestroy,
         _memoryBacking  = [[TNLibvirtDomainMemoryBacking alloc] initWithXMLNode:[aNode firstChildWithName:@"memoryBacking"]];
         _memoryTuning   = [[TNLibvirtDomainMemoryTune alloc] initWithXMLNode:[aNode firstChildWithName:@"memtune"]];
         _OS             = [[TNLibvirtDomainOS alloc] initWithXMLNode:[aNode firstChildWithName:@"os"] domainType:[aNode valueForAttribute:@"type"]];
-        _cpu            = [[TNLibvirtDomainCpu alloc] initWithXMLNode:[aNode firstChildWithName:@"cpu"];
+        if ([aNode containsChildrenWithName:@"cpu"])
+            _cpu            = [[TNLibvirtDomainCpu alloc] initWithXMLNode:[aNode firstChildWithName:@"cpu"];
 
         _commandLine    = [CPArray array];
         var clNodes     = [aNode childrenWithName:@"commandline"];
