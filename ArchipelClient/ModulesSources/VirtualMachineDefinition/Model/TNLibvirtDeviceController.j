@@ -20,6 +20,7 @@
 @import <StropheCappuccino/TNXMLNode.j>
 
 @import "TNLibvirtDeviceControllerAddress.j"
+@import "TNLibvirtDeviceControllerDriver.j"
 
 
 TNLibvirtDeviceControllerTypeIDE            = @"ide";
@@ -90,7 +91,8 @@ TNLibvirtDeviceControllerModels = [TNLibvirtDeviceControllerModelAUTO,
     CPString                            _port       @accessors(property=port);
     CPString                            _vector     @accessors(property=vector);
 
-    TNLibvirtDeviceControllerAddress    _address    @accessors(property=vector);
+    TNLibvirtDeviceControllerAddress    _address    @accessors(property=address);
+    TNLibvirtDeviceControllerDriver     _driver     @accessors(property=driver);
 }
 
 
@@ -115,6 +117,8 @@ TNLibvirtDeviceControllerModels = [TNLibvirtDeviceControllerModelAUTO,
 
         if ([aNode containsChildrenWithName:@"address"])
             _address = [[TNLibvirtDeviceControllerAddress alloc] initWithXMLNode:[aNode firstChildWithName:@"address"]];
+        if ([aNode containsChildrenWithName:@"driver"])
+            _driver = [[TNLibvirtDeviceControllerDriver alloc] initWithXMLNode:[aNode firstChildWithName:@"driver"]];
 
     }
 
@@ -153,8 +157,13 @@ TNLibvirtDeviceControllerModels = [TNLibvirtDeviceControllerModelAUTO,
         [node up];
     }
 
+    if (_driver)
+    {
+        [node addNode:[_driver XMLNode]];
+        [node up];
+    }
+
     return node;
 }
 
 @end
-
